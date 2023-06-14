@@ -4,26 +4,11 @@ import os
 import re
 import hashlib
 from functools import wraps
-import requests
-from io import BytesIO
 from base64 import b64encode
 
-from azure.identity import DefaultAzureCredential
-from azure.keyvault.secrets import SecretClient
-
 from sagalabs.db import get_db
-from sagalabs.users import from_obj
-
-ips = ['http://52.137.44.13', 'http://52.137.43.239', 'http://52.137.44.104','http://52.137.43.174']
 
 bp = Blueprint('sagalabs', __name__, url_prefix='')
-
-def basic_auth():
-    with open('sagalabs/secrets/vpn.key', 'r') as f:
-        password = f.read()
-    token = b64encode(f'sagavpn-api:{password}'.encode()).decode()
-    return f'Basic {token}'
-
 
 def login_required(f):
     @wraps(f)
@@ -72,8 +57,6 @@ def login():
         return redirect(url_for('sagalabs.home'))
 
     return render_template('login.html')
-
-
 
 # Register page
 @bp.route('/register', methods=['GET', 'POST'])
@@ -154,115 +137,3 @@ def logout():
  
     flash('You are now logged out', 'info')
     return redirect(url_for('sagalabs.login'))
-
-
-# Temporary pages are used for inspiration and should not reach production:
-
-#enter sagalabs
-@bp.route('/enter', methods=['GET'])
-@login_required
-def enter():
-    return render_template('enter.html', lab_count=len(ips) )
-
-#knowledge space
-@bp.route('/knowledge', methods=['GET'])
-@login_required
-def knowledge():
-    return render_template('knowledge.html')
-
-#admin panel
-@bp.route('/admin', methods=['GET'])
-@login_required
-def admin():
-    user = session.get('username')
-    data = {'username': user}
-    headers = {'Authorization': basic_auth()}
-
-    # get all users
-    try:
-        r = requests.post(f'{vpn_url}/api/users/list', headers=headers, data=data, timeout=5) # 1 sec timeout
-        r = r.json()
-        r = r if r is not None else []
-
-    except:
-        abort(503) # service unavailable
-
-    # create array of users, with all their data
-    db = get_db()
-    c = db.cursor()
-    users = []
-    for i, user in enumerate(r):
-        name = r[i]['Identity']
-
-        # see if users is in db
-        c.execute('''SELECT id FROM users WHERE username=? COLLATE NOCASE''', (name, ))
-        existing = c.fetchone()
-        if existing is not None:
-            r[i]['id'] = existing['id']
-
-        users.append(from_obj(r[i]))
-
-    user_count = len(users)
-    connected = len([u for u in users if u.connected])
-
-    return render_template('admin.html', users=users, count=user_count, connected=connected)
-
-# Delete user
-@bp.route('/delete/<user>', methods=['GET'])
-@login_required
-def delete_user(user):
-    data = {'username': user}
-    headers = {'Authorization': basic_auth()}
-
-    try:
-        # revoke the key
-        r = requests.post(f'{vpn_url}/api/user/revoke', headers=headers, data=data, timeout=1.0)
-    except:
-        abort(503)
-
-    if not r.ok:
-        flash('Something went wrong trying to revoke the key', 'error')
-        return redirect(url_for('sagalabs.enter'))
-
-    try:
-        # delete the key
-        r = requests.post(f'{vpn_url}/api/user/delete', headers=headers, data=data, timeout=1.0)
-    except:
-        abort(503)
-
-    if not r.ok:
-        flash('Something went wrong trying to delete the user', 'error')
-        return redirect(url_for('sagalabs.enter'))
-
-    flash('User deleted successfully', 'info')
-    return redirect(url_for('sagalabs.admin'))
-
-# Download
-@bp.route('/download/<int:num>', methods=['GET'])
-@login_required
-def download_config(num):
-    try:
-        url = ips[num-1] # visually 1-n
-    except:
-        abort(400)
-
-    user = session.get('username')
-    data = {'username': user}
-    headers = {'Authorization': basic_auth()}
-
-    try:
-        ## create key, if not already existing
-        r = requests.post(f'{url}/api/user/create', headers=headers, data=data, timeout=1.0)
-
-        # get the key, newly created or not
-        r = requests.post(f'{url}/api/user/config/show', headers=headers, data=data, timeout=1.0)
-
-    except:
-        abort(503)
-
-    # write the file to a buffer
-    buffer = BytesIO()
-    buffer.write(r.content)
-    buffer.seek(0)
-
-    return send_file(buffer, as_attachment=True, download_name=f'{user}_lab{num}.ovpn', mimetype='text/csv')
