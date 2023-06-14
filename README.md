@@ -1,4 +1,4 @@
-# SagaLabs frontend
+# SagaLabs Web Manager
 
 Written in Flask
 
