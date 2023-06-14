@@ -46,12 +46,5 @@ This can thus be omited, meaning containers are stopped by the `docker stop <con
 You must be authorized to Azure in the current session (`az login`).
 
 ### TODO
-
-- [x] Add multiple VPN urls at once
-- [x] create timeout for request
-- [x] handle errors from requests
-- [x] import API key from Azure
-- [ ] Admin panel shows multiple labs (admin panel works)
-- [ ] Get IPs from Azure
-- [ ] keyvault temorary storage
-- [ ] admin secret key from keyvault
+- [] Remove use case: User
+- [] BackBone integration
