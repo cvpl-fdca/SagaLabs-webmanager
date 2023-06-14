@@ -34,16 +34,6 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-
-def admin_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not session.get('admin'):
-            flash('You are not an admin', 'error')
-            return redirect(url_for('sagalabs.home'))
-        return f(*args, **kwargs)
-    return decorated_function
-
 # Index page
 @bp.route('/')
 @login_required
@@ -76,7 +66,6 @@ def login():
         session['logged_in'] = True
         session['username'] = user['username']
         session['user_id'] = user['id']
-        session['admin'] = user['is_admin']
 
         flash('Welcome! You are now logged in.', 'info')
 
@@ -116,7 +105,7 @@ def register():
             return render_template('register.html')
 
         # Check if username is taken
-        c.execute('''SELECT * FROM users WHERE username=? COLLATE NOCASE''', (usr, ))
+        c.execute('''SELECT * FROM users WHERE username=? COLLATE NOCASE''', (usr,))
         if c.fetchone() is not None:
             flash(f"Username '{usr}' already taken", 'error')
             return render_template('register.html')
@@ -144,8 +133,8 @@ def register():
         # If all is well create the user
         hashed_password = hashlib.sha256(pwd1.encode()).hexdigest()
 
-        c.execute("INSERT INTO users (username, password, is_admin) VALUES (?,?,?)",
-                   (request.form['username'], hashed_password, True))
+        c.execute("INSERT INTO users (username, password) VALUES (?,?)",
+                   (request.form['username'], hashed_password))
         db.commit()
 
         flash(f"Registration succeeded. You can now log in.", 'info')
@@ -162,7 +151,6 @@ def logout():
     session.pop('logged_in', None)
     session.pop('username', None)
     session.pop('user_id', None)
-    session.pop('admin', None)
  
     flash('You are now logged out', 'info')
     return redirect(url_for('sagalabs.login'))
@@ -185,7 +173,6 @@ def knowledge():
 #admin panel
 @bp.route('/admin', methods=['GET'])
 @login_required
-@admin_required
 def admin():
     user = session.get('username')
     data = {'username': user}
@@ -223,7 +210,6 @@ def admin():
 # Delete user
 @bp.route('/delete/<user>', methods=['GET'])
 @login_required
-@admin_required
 def delete_user(user):
     data = {'username': user}
     headers = {'Authorization': basic_auth()}
