@@ -41,5 +41,5 @@ This can thus be omited, meaning containers are stopped by the `docker stop <con
 - List running containers: `docker ps`.
 
 ### TODO
-- [] Remove use case: User
-- [] BackBone integration
+- [x] Remove use case: User
+- [ ] BackBone integration
