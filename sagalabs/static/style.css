@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
+html{
+    background-color: #0c0d16;
+}
+body {
+    font-family: Poppins;
+    padding: 0;
+    margin: 0;
+    background-color: #0c0d16;
+}
+a{
+    text-decoration: none;
+    color:#0c0d16;
+}
+.content-bg{
+    background-color: #D9D9D9;
+}
+#logo{
+    display: block;
+    max-width: 10%;
+    padding:5px;
+    vertical-align: middle;
+    height:100%;
+    margin: 0 auto;
+
+}
+#topbar{
+    max-width:100%;
+    margin:0 auto;
+    text-align: center;
+    background-color: #0c0d16;
+    
+}
+#topbar .pill-nav{
+    background-color: #fff;
+    border-radius: 25px;
+    padding: 5px;
+    max-width: 45%;
+    margin: 0 auto;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    margin-top: 10px;
+}
+#topbar .pill-nav a {
+    display: inline-block;
+    color: #696868;
+    text-align: center;
+    padding: 14px;
+    padding-left:25px;
+    padding-right: 25px;
+    font-size:24px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease, height 2s ease, width 2s 2s ease;
+
+  }
+ /* #topbar a + a:before{
+    content: " | ";
+}*/
+  /*VPN button*/
+  .vpn-btn{
+    background-color: #77037B !important;
+  }
+  /*Knowledge space*/
+  .knowledge a{
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  /* Change the color of links on mouse-over */
+ #topbar .pill-nav a:hover, #topbar .login-nav a:hover {
+    color:#0c0d16;
+    border-bottom: 3px solid #FF00E9;
+    padding-bottom: 5px;
+}
+  
+  /* Add a color to the active/current link */
+#topbar .pill-nav a.active {
+    color:#0c0d16;
+    border-bottom: 3px solid #FF00E9;
+    padding-bottom: 5px;
+  
+  }
+#topbar .login-nav a{
+    color:#fff !important;
+    font-weight: bold;
+    padding:5px;
+}
+
+header {
+    width: 100%;
+    background: white;
+}
+
+.flashes {
+    list-style: none;
+    padding: 0;
+    border: 1px solid #666;
+}
+
+.flashes .error {
+    background: #bf7777;
+    padding: 0.5em;
+}
+
+.flashes .info {
+    background: #8db080;
+    padding: 0.5em;
+}
+
+a, h2 {
+    color: #555;
+}
+
+h2 {
+    font-family: sans-serif;
+    font-size: 1.2em;
+    margin: 0;
+}
+
+.page {
+    padding: 0px;
+    background-color: #0c0d16;
+}
+
+.button {
+    margin-top:20px;
+}

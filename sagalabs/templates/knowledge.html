@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="container w-50 text-bg-light rounded p-4 border-info border knowledge">
+
+    <div class="container p-2">
+        <div class="row align-items-start text-left ">
+            <div class="col text-secondary">
+                <h1 class="fw-bold">Knowledge Space</h1>
+            </div>
+        </div>
+    </div>
+    <div class="container p-2">
+        <div class="row">
+            <div class="col content-bg rounded border p-2">
+                <h4 class="fw-bold"> Instructions </h4>
+                <p>
+                    This sagalabs event will be more purple teaming than you might have 
+                    experienced before. We are going to split into teams of 4. Each team consists of 
+                    2 blue teamers and 2 red teamers.
+                </p>
+                <p>
+                    The idea is to follow the attack paths and monitor incoming alarms and 
+                    alerts as attacks are executed.
+                    This will help give each team a better understanding of tools, techniques, 
+                    procedures, evasion tactics, etc.
+                    </p>
+                    <p>
+                        During the event you will have access to different AV/EDR solutions so you can 
+                    test your abilities against. The primary AV/EDR is Elastic.
+                    Using different file types and evasion techniques you will discover that some EDR 
+                    solutions has blind spots.
+                  
+                    </p>
+                    <p>
+                        Feel free to utilize any tool you see fit or modify the tools described in the 
+                        document.
+                        This time we are going to use HardHatC2
+                        1
+                         as our command and control, 
+                        however, if you would like to use Sliver, Mythic, Havoc, or something else feel 
+                        free to do that as you will have root access to the C2 server.
+                      
+                    </p>
+                    <p>
+                        You may experience the default configuration of HardHatC2 to be caught by 
+                        AV/EDR while Sliver or Mythic is not as fingerprinted.
+                    </p>
+
+                    <p style="font-weight: 600;">
+                        Below you can download more instructions
+                    </p>
+            </div>
+        </div>
+        <div class="row pt-4 ms-2 text-center knowledge-btn">
+            <a href="https://docs.google.com/document/d/1JLhw27CNKg_QVhdSiK3zITpGX9KmQmqC/edit?usp=sharing&ouid=105562357976685907949&rtpof=true&sd=true" target="_blank"><div class="col-12 p-4 rounded border text-bg-success"> Download attackpath </div></a>
+        </div>
+        <div class="row pt-4 ms-2 text-center knowledge-btn">
+            <a href="https://www.microsoft.com/da-dk/security/business/security-101/what-is-siem" target="_blank"><div class="col-12 p-4 rounded border text-bg-light"> What is a SIEM? </div></a>
+        </div>
+        <div class="row pt-4 ms-2 text-center knowledge-btn">
+            <a href="https://www.paloaltonetworks.com/cyberpedia/command-and-control-explained" target="_blank"><div class="col-12 p-4 rounded border text-bg-light"> What is a C2? </div></a>
+        </div>
+        <div class="row pt-4 ms-2 text-center knowledge-btn">
+            <a href="/static/our_master.png" target="_blank"><div class="col-12 p-4 rounded border text-bg-light"> What is SagaLabs?</div></a>
+        </div>
+    </div>
+
+</div>
+
+
+
+{% endblock %}

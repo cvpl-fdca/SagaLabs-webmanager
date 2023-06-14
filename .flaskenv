@@ -1,0 +1,2 @@
+FLASK_APP=sagalabs
+FLASK_DEBUG=1

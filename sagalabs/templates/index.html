@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="container w-50 ">
+
+<div class="row">
+  <div class="col">
+    <div class="card shadow-sm">
+      <img src="/static/enter.png" class="card-img-top" alt="Knowledge">
+      <div class="card-body">
+        <h4 class="card-title fw-bold">Enter SagaLabs</h4>
+        <p class="card-text">Entering SagaLabs is like entering a world of cyber security magic. This platform allows you to emulate real-world cyber threats and conduct threat hunting exercises to hone your skills and knowledge in the field. Do you dare to enter?</p>
+        <a href="{{ url_for('sagalabs.enter') }}" class="btn btn-primary"><i class="fa-solid fa-door-open"></i> Enter SagaLabs</a>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card shadow-sm">
+      <img src="/static/knowledge.png" class="card-img-top" alt="Knowledge">
+      <div class="card-body">
+        <h4 class="card-title fw-bold">Knowledge Space</h4>
+        <p class="card-text">The knowledge space is a place where you can find a wealth of information relevant to SagaLabs and all things cyber security. Here, you'll find articles, and other resources that can help you learn more about the world of cyber threats.</p>
+        <a href="{{ url_for('sagalabs.knowledge') }}" class="btn btn-primary"><i class="fa-solid fa-book"></i> Go to Knowledge Space  </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+{% endblock %}
