@@ -40,11 +40,6 @@ This can thus be omited, meaning containers are stopped by the `docker stop <con
 - List installed images: `docker images`
 - List running containers: `docker ps`.
 
-
-### Authorization
-
-You must be authorized to Azure in the current session (`az login`).
-
 ### TODO
 - [] Remove use case: User
 - [] BackBone integration
