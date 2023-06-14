@@ -1,31 +1,63 @@
-{% extends "layout.html" %}
-{% block body %}
-
-<div class="container w-50 ">
-
-<div class="row">
-  <div class="col">
-    <div class="card shadow-sm">
-      <img src="/static/enter.png" class="card-img-top" alt="Knowledge">
-      <div class="card-body">
-        <h4 class="card-title fw-bold">Enter SagaLabs</h4>
-        <p class="card-text">Entering SagaLabs is like entering a world of cyber security magic. This platform allows you to emulate real-world cyber threats and conduct threat hunting exercises to hone your skills and knowledge in the field. Do you dare to enter?</p>
-        <a href="{{ url_for('sagalabs.enter') }}" class="btn btn-primary"><i class="fa-solid fa-door-open"></i> Enter SagaLabs</a>
+{% extends "layout.html" %} {% block body %} <div class="container w-50 text-bg-light rounded p-4 border-info border">
+  <div class="container p-2">
+    <div class="row align-items-start text-left ">
+      <div class="col text-secondary">
+        <h1 class="fw-bold">Template</h1>
       </div>
     </div>
   </div>
-  <div class="col">
-    <div class="card shadow-sm">
-      <img src="/static/knowledge.png" class="card-img-top" alt="Knowledge">
-      <div class="card-body">
-        <h4 class="card-title fw-bold">Knowledge Space</h4>
-        <p class="card-text">The knowledge space is a place where you can find a wealth of information relevant to SagaLabs and all things cyber security. Here, you'll find articles, and other resources that can help you learn more about the world of cyber threats.</p>
-        <a href="{{ url_for('sagalabs.knowledge') }}" class="btn btn-primary"><i class="fa-solid fa-book"></i> Go to Knowledge Space  </a>
+  <div class="container p-2 ">
+    <div class="row mt-4 content-bg rounded border">
+      <div class="col p-4">
+        <h4 class="fw-bold"> VPN-Connection </h4>
+        <p> To connect to SagaLabs through VPN, you will need to have the OpenVPN client installed on your device. <br> You can download the client from the <a href="https://openvpn.net/vpn-client/">OpenVPN</a> or through your operating system's package manager. </p>
+        <h6 class="fw-bold">To connect to SagaLabs using OpenVPN, follow these steps:</h6>
+        <ul class="list-group list-group-numbered">
+          <li class="list-group-item">Open the OpenVPN client on your device</li>
+          <li class="list-group-item">Select the configuration file provided by SagaLabs</li>
+          <li class="list-group-item">Click "Connect"</li>
+        </ul>
+        <p class="pt-2"> Once connected, all of your internet traffic will be routed through the VPN connection, providing you with a secure and private connection to SagaLabs. </p>
+      </div>
+    </div>
+    <div class="row mt-4 content-bg rounded border">
+      <div class="col p-4">
+        <h4 class="fw-bold"> Credentials </h4>
+        <ul class="list-group">
+          <li class="list-group-item">
+            <div class="row">
+              <div class="col">
+                <h4 class="fw-bold">Elastic</h4> URL: <a href="https://fdca-main.kb.westeurope.azure.elastic-cloud.com/s/sagalabs-spring-23/app/home#/">https://fdca-main.kb.westeurope.azure.elastic-cloud.com/s/sagalabs-spring-23/app/home#/</a>
+                <p class="mb-0"> <strong>Username</strong>: <code>SagaS23</code></p>
+                <p> <strong>Password</strong>: <code>juKy0Uxzz091mRF</code></p>
+                <p>
+                  <i>
+                    Click on "Log in with Elastic"
+                  </i>
+                </p>
+              </div>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="row">
+              <div class="col">
+                <h4 class="fw-bold">Optional: Vectr</h4> URL: <a href="https://vectr.sagalabs.dk/">vectr.sagalabs.dk/</a>
+                <p class="mb-0"> <strong>Username</strong>: <code>SagaS23</code></p>
+                <p> <strong>Password</strong>: <code>juKy0Uxzz091mRF</code></p>
+                <p>
+                  <i>
+                   - Go to assessments
+                   - Find your group
+                   - Choose Attack Path.
+                   
+
+                  </i>
+                </p>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
-</div>
-
-</div>
-
-{% endblock %}
+</div> {% endblock %}
