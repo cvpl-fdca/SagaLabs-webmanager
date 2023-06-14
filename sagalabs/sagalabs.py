@@ -95,6 +95,7 @@ def register():
         usr = request.form['username']
         pwd1 = request.form['password1']
         pwd2 = request.form['password2']
+        token = request.form['token']
 
         db = get_db()
         c = db.cursor()
@@ -130,25 +131,24 @@ def register():
             flash("Password is too weak, try again.", 'error')
             return render_template('register.html')
 
-        # If all is well create the user
-        hashed_password = hashlib.sha256(pwd1.encode()).hexdigest()
-
-        # create user with admin privs, if token is correct
+        # Check if token is correct
         # admin_key = open('sagalabs/secrets/admin.key', 'r').read()
         admin_key = os.getenv('SL_ADMIN_KEY')
         if admin_key is None:
             print('------ADMIN KEY NOT SET!------')
             admin_key = 's3crEt@dm!n'
+        if token != admin_key:
+            flash("Admin token is incorrect", 'error')
+            return render_template('register.html')
 
-        token = request.form['token']
-        admin = True if token == admin_key else False
-        privs = 'Admin' if admin else 'User'
+        # If all is well create the user
+        hashed_password = hashlib.sha256(pwd1.encode()).hexdigest()
 
         c.execute("INSERT INTO users (username, password, is_admin) VALUES (?,?,?)",
-                   (request.form['username'], hashed_password, admin))
+                   (request.form['username'], hashed_password, True))
         db.commit()
 
-        flash(f"{privs} '{usr}' registered, you can now log in.", 'info')
+        flash(f"Registration succeeded. You can now log in.", 'info')
 
         return redirect(url_for('sagalabs.login'))
 
