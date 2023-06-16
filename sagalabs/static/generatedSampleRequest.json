@@ -1,0 +1,63 @@
+{
+    "sagaDev1": {
+      "1": [
+        {
+          "name": "vpn-ip",
+          "ip_address": "20.8.170.101"
+        }
+      ],
+      "2": [
+        {
+          "name": "vpn-ip",
+          "ip_address": "20.8.170.102"
+        }
+      ],
+      "3": [
+        {
+          "name": "vpn-ip",
+          "ip_address": "20.8.170.103"
+        }
+      ]
+    },
+    "sagaDev2": {
+      "1": [
+        {
+          "name": "vpn-ip",
+          "ip_address": "20.8.170.104"
+        }
+      ],
+      "2": [
+        {
+          "name": "vpn-ip",
+          "ip_address": "20.8.170.105"
+        }
+      ],
+      "3": [
+        {
+          "name": "vpn-ip",
+          "ip_address": "20.8.170.106"
+        }
+      ]
+    },
+    "sagaDev3": {
+      "1": [
+        {
+          "name": "vpn-ip",
+          "ip_address": "20.8.170.107"
+        }
+      ],
+      "2": [
+        {
+          "name": "vpn-ip",
+          "ip_address": "20.8.170.108"
+        }
+      ],
+      "3": [
+        {
+          "name": "vpn-ip",
+          "ip_address": "20.8.170.109"
+        }
+      ]
+    }
+  }
+  

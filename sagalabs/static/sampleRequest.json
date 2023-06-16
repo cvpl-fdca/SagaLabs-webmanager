@@ -1,0 +1,58 @@
+{
+    "sagaDev": {
+      "1": [
+        {
+          "id": "/subscriptions/06d0a3df-f3c0-4336-927d-db8891937870/resourceGroups/SAGA-DEV/providers/Microsoft.Compute/disks/vpn_OsDisk_1_279d8726622245f9ad69b5ae3e9f6a26",
+          "name": "vpn_OsDisk_1_279d8726622245f9ad69b5ae3e9f6a26",
+          "type": "Microsoft.Compute/disks",
+          "location": "westeurope",
+          "managedBy": "/subscriptions/06d0a3df-f3c0-4336-927d-db8891937870/resourceGroups/Saga-Dev/providers/Microsoft.Compute/virtualMachines/vpn",
+          "sku": {
+            "name": "Standard_LRS",
+            "tier": "Standard"
+          }
+        },
+        {
+          "id": "/subscriptions/06d0a3df-f3c0-4336-927d-db8891937870/resourceGroups/Saga-Dev/providers/Microsoft.Compute/sshPublicKeys/vpn_key",
+          "name": "vpn_key",
+          "type": "Microsoft.Compute/sshPublicKeys",
+          "location": "westeurope",
+          "tags": {}
+        },
+        {
+          "id": "/subscriptions/06d0a3df-f3c0-4336-927d-db8891937870/resourceGroups/Saga-Dev/providers/Microsoft.Compute/virtualMachines/vpn",
+          "name": "vpn",
+          "type": "Microsoft.Compute/virtualMachines",
+          "location": "westeurope"
+        },
+        {
+          "id": "/subscriptions/06d0a3df-f3c0-4336-927d-db8891937870/resourceGroups/Saga-Dev/providers/Microsoft.Network/networkInterfaces/vpn704_z1",
+          "name": "vpn704_z1",
+          "type": "Microsoft.Network/networkInterfaces",
+          "location": "westeurope"
+        },
+        {
+          "id": "/subscriptions/06d0a3df-f3c0-4336-927d-db8891937870/resourceGroups/Saga-Dev/providers/Microsoft.Network/networkSecurityGroups/vpn-nsg",
+          "name": "vpn-nsg",
+          "type": "Microsoft.Network/networkSecurityGroups",
+          "location": "westeurope"
+        },
+        {
+          "id": "/subscriptions/06d0a3df-f3c0-4336-927d-db8891937870/resourceGroups/Saga-Dev/providers/Microsoft.Network/publicIPAddresses/vpn-ip",
+          "name": "vpn-ip",
+          "type": "Microsoft.Network/publicIPAddresses",
+          "location": "westeurope",
+          "sku": {
+            "name": "Standard"
+          },
+          "ip_address": "20.8.170.101"
+        },
+        {
+          "id": "/subscriptions/06d0a3df-f3c0-4336-927d-db8891937870/resourceGroups/Saga-Dev/providers/Microsoft.Network/virtualNetworks/vpn-vnet",
+          "name": "vpn-vnet",
+          "type": "Microsoft.Network/virtualNetworks",
+          "location": "westeurope"
+        }
+      ]
+    }
+  }

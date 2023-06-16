@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, flash, redirect, url_for, session,
 import os
 import re
 import hashlib
+import json
 from functools import wraps
 from base64 import b64encode
 
@@ -23,7 +24,9 @@ def login_required(f):
 @bp.route('/')
 @login_required
 def home():
-    return render_template('index.html')
+    with open('sagalabs/static/generatedSampleRequest.json', 'r') as sampleFile:
+        sampleData = json.load(sampleFile)
+        return render_template('index.html', data=sampleData)
 
 # Login page
 @bp.route('/login', methods=['GET', 'POST'])
