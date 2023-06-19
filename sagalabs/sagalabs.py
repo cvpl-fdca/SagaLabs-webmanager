@@ -1,4 +1,8 @@
-from flask import Blueprint, render_template, flash, redirect, url_for, session, request, send_file, abort
+from flask import Blueprint, render_template, flash, redirect, url_for, session, request, send_file, abort, jsonify
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import auth
+from sagalabs.utils.User import User
 
 import os
 import re
@@ -8,6 +12,11 @@ from functools import wraps
 from base64 import b64encode
 
 from sagalabs.db import get_db
+
+#Firebase Service Account
+cred = credentials.Certificate("secrets/FirebasePrivateKey.json")  # Path to your service account key JSON file
+firebase_admin.initialize_app(cred)
+
 
 bp = Blueprint('sagalabs', __name__, url_prefix='')
 
@@ -27,6 +36,33 @@ def home():
     with open('sagalabs/static/generatedSampleRequest.json', 'r') as sampleFile:
         sampleData = json.load(sampleFile)
         return render_template('index.html', data=sampleData)
+
+@bp.route('/users')
+@login_required
+def users():
+    #Get a list of users from firebase auth
+    userRecordList = auth.list_users().users
+    #Creates a user object from userRecordList
+    users = list(map(lambda user: User(user), userRecordList))
+    return render_template('users.html', users=users)
+
+@bp.route('/UpdateUserType', methods=['POST'])
+@login_required
+def UpdateUserType():
+    data = request.get_json()
+    uid = data.get('uid')
+    newType = data.get('UserType')
+
+    #Bad request
+    if not newType in ['User', 'Admin', 'SuperAdmin']:
+        return '', 400
+
+    #Update user
+    user = auth.get_user(uid)
+    customClaims = user.custom_claims
+    customClaims['UserType'] = newType
+    auth.update_user(user.uid, custom_claims=customClaims)
+    return '', 200
 
 # Login page
 @bp.route('/login', methods=['GET', 'POST'])
