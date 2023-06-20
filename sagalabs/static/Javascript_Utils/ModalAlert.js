@@ -17,7 +17,7 @@ class ModalAlert{
             this.modalHTML.removeEventListener('hidden.bs.modal', this.currentEventListener)
         }
         //Set title and body
-        this.modalHTML.querySelector('.modal-title').innerHTML =  "<b>" + title + "/<b>";
+        this.modalHTML.querySelector('.modal-title').innerHTML =  "<b>" + title + "</b>";
         this.modalHTML.querySelector('.modal-body').innerHTML = text;
         //Set new event listeners
         this.modalHTML.addEventListener('hidden.bs.modal', onClose);
