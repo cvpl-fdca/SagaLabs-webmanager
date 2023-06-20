@@ -32,7 +32,7 @@ class ModalAccept{
             this.modalHTML.removeEventListener('hidden.bs.modal', this.currentEventListeners[1])
         }
         //Set title and body
-        this.modalHTML.querySelector('.modal-title').innerHTML = title;
+        this.modalHTML.querySelector('.modal-title').innerHTML = "<b>" + title + "</b>";
         this.modalHTML.querySelector('.modal-body').innerHTML = text;
         //Set new event listeners
         this.acceptButton.addEventListener('click', onAcceptWrapper);
