@@ -1,138 +1,88 @@
-{% extends "layout.html" %} {% block body %} <div class="container w-50 text-bg-light rounded p-4 border-info border">
+{% extends "layout.html" %} 
+{% block body %} 
+
+<!--Accept Modal-->
+{% include "/components/ModalAccept.html" %}
+
+  <div class="container w-50 text-bg-light rounded p-4 border-info border">
     <div class="container p-2">
       <div class="row align-items-start text-left ">
         <div class="col text-secondary">
           <h1 class="fw-bold">Users</h1>
+          <!-- TABLE -->
+          <table class="table table-striped">
+            <thead class="table-dark">
+              <tr>
+                <th>Type</th>
+                <th>Display Name</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              <script> 
+                //This <script> tag adds functionality to update users user type
 
+                const modal = new ModalAccept(document.getElementById('confirmationBox'))
 
-            <!-- MODAL-->
-            <div class="modal fade" id="confirmationBox" tabindex="-1" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body"></div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" id="modal-accept-changes" class="btn btn-primary">Save changes</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- END MODAL -->
+                //This function is run when a user type is changed in UI
+                function confirmChange(userId, DisplayName, oldType) {
+                  const newType = document.getElementById('type-select-' + userId).value;
 
-            <!-- TABLE -->
-            <table class="table table-striped">
-                <thead class="table-dark">
-                  <tr>
-                    <th>Type</th>
-                    <th>Display Name</th>
-                    <th>Email</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <script>
+                  //This function makes a update user POST request to /UpdateUserType
+                  function submitUpdateRequest(){
 
-                    currentModalEventListenerFunctions = false
-
-                    function activateModal(modalElement, title, text, onAccept, onClose = () => null) {
-                      bootstrapModal = new bootstrap.Modal(modalElement)
-
-                      function onAcceptWrapper(){
-                        closeWithoutEvent = true
-                        bootstrapModal.hide()
-                        onAccept()
-                      }
-
-                      function onCloseWrapper(){
-                        if(!closeWithoutEvent){
-                          onClose()
-                        }
-                      }
-
-                      let acceptButton = modalElement.querySelector('#modal-accept-changes');
-                      let closeWithoutEvent = false
-
-                      if(currentModalEventListenerFunctions){
-                        console.log(currentModalEventListenerFunctions)
-                        acceptButton.removeEventListener('click', currentModalEventListenerFunctions[0]);
-                        modalElement.removeEventListener('hidden.bs.modal', currentModalEventListenerFunctions[1])
-                      }
-
-                      modalElement.querySelector('.modal-title').innerHTML = title;
-                      modalElement.querySelector('.modal-body').innerHTML = text;
-
-                      acceptButton.addEventListener('click', onAcceptWrapper);
-                      modalElement.addEventListener('hidden.bs.modal', onCloseWrapper);
-
-                      currentModalEventListenerFunctions = [onAcceptWrapper, onCloseWrapper]
-
-                      bootstrapModal.show();
-                    }
-
-                    function confirmChange(userId, DisplayName, oldType) {
+                    var data = {
+                        uid: userId,
+                        UserType: newType
+                    };
                       
-                        var newType = document.getElementById('type-select-' + userId).value;
-                        htmlModal = document.getElementById('confirmationBox')
+                    fetch('/UpdateUserType', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify(data)
+                    })
+                    .then(response => {
+                      if(response.status === 200){
+                        alert("Successfully changed '" + DisplayName + "' to '" + data.UserType + "'.")
+                        location.reload();
+                      } else {
+                        alert("An error occoured. Please refresh and try again");
+                      }
+                    })
+                    .catch(error => {
+                        alert("An error occoured. Please refresh and try again");
+                    });
+                  }
 
-                        function submitUpdateRequest(){
+                  modal.display(
+                    "Confirm Changes", 
+                    "Are you sure you want to change Type to <b>'" + newType + "'</b> for <b>'" + DisplayName + "'</b>?", 
+                    submitUpdateRequest,
+                    ()=>document.getElementById('type-select-' + userId).value = oldType
+                  )
+                }
+              </script>
 
-                            // Perform the necessary action, such as calling a Python function via AJAX
-                            // or updating the user's display name on the server
-                            var data = {
-                                uid: userId,
-                                UserType: newType
-                            };
-                            
-                            fetch('/UpdateUserType', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(data)
-                            })
-                            .then(response => {
-                                // Handle the response
-                                if(response.status === 200){
-                                  alert("Successfully changed '" + DisplayName + "' to '" + data.UserType + "'.")
-                                  location.reload();
-                                } else {
-                                  alert("An error occoured. Please refresh and try again");
-                                }
-                            })
-                            .catch(error => {
-                                alert("An error occoured. Please refresh and try again");
-                            });
-                          }
-
-                        activateModal(htmlModal, 
-                          "Confirm Changes", 
-                          "Are you sure you want to change Type to <b>'" + newType + "'</b> for <b>'" + DisplayName + "'</b>?", 
-                          submitUpdateRequest,
-                          ()=>document.getElementById('type-select-' + userId).value = oldType
-                        )
-                    }
-                  </script>
-
-                  {% for user in users %}
-                  <tr>
-                    <td>
-                      <select class="form-select" id="type-select-{{ user.id }}" onchange="confirmChange('{{ user.id }}', '{{ user.display_name }}', '{{ user.local_claims.UserType }}')" autocomplete="off">
-                        <option value="User" {% if user.local_claims.UserType == 'User' %}selected{% endif %} >User</option>
-                        <option value="Admin" {% if user.local_claims.UserType == 'Admin' %}selected{% endif %}>Admin</option>
-                        <option value="SuperAdmin" {% if user.local_claims.UserType == 'SuperAdmin' %}selected{% endif %}>SuperAdmin</option>
-                      </select>
-                    </td>
-                    <td class="align-middle">{{ user.display_name }}</td>
-                    <td class="align-middle">{{ user.email }}</td>
-                  </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <!-- TABLE END -->
+              {% for user in users %}
+              <tr>
+                <td>
+                  <select class="form-select" id="type-select-{{ user.id }}" onchange="confirmChange('{{ user.id }}', '{{ user.display_name }}', '{{ user.local_claims.UserType }}')" autocomplete="off">
+                    <option value="User" {% if user.local_claims.UserType == 'User' %}selected{% endif %} >User</option>
+                    <option value="Admin" {% if user.local_claims.UserType == 'Admin' %}selected{% endif %}>Admin</option>
+                    <option value="SuperAdmin" {% if user.local_claims.UserType == 'SuperAdmin' %}selected{% endif %}>SuperAdmin</option>
+                  </select>
+                </td>
+                <td class="align-middle">{{ user.display_name }}</td>
+                <td class="align-middle">{{ user.email }}</td>
+              </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+          <!-- END TABLE -->
         </div>
       </div>
     </div>
-  </div> {% endblock %}
+  </div> 
+{% endblock %}

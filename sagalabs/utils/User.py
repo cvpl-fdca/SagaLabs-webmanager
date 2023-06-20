@@ -1,5 +1,5 @@
 class User:
-    DEFAULT_CLAIMS = {'UserType': 'Admin'}
+    DEFAULT_CLAIMS = {'UserType': 'User'}
 
     def __init__(self, user_record):
         self.user_record = user_record
