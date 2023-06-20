@@ -27,9 +27,9 @@
             <table class="table table-striped">
                 <thead class="table-dark">
                   <tr>
+                    <th>Type</th>
                     <th>Display Name</th>
                     <th>Email</th>
-                    <th>Type</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -118,16 +118,15 @@
 
                   {% for user in users %}
                   <tr>
-                    <td>{{ user.display_name }}</td>
-                    <td>{{ user.email }}</td>
                     <td>
-                
-                      <select id="type-select-{{ user.id }}" onchange="confirmChange('{{ user.id }}', '{{ user.display_name }}', '{{ user.local_claims.UserType }}')" autocomplete="off">
+                      <select class="form-select" id="type-select-{{ user.id }}" onchange="confirmChange('{{ user.id }}', '{{ user.display_name }}', '{{ user.local_claims.UserType }}')" autocomplete="off">
                         <option value="User" {% if user.local_claims.UserType == 'User' %}selected{% endif %} >User</option>
                         <option value="Admin" {% if user.local_claims.UserType == 'Admin' %}selected{% endif %}>Admin</option>
                         <option value="SuperAdmin" {% if user.local_claims.UserType == 'SuperAdmin' %}selected{% endif %}>SuperAdmin</option>
                       </select>
                     </td>
+                    <td class="align-middle">{{ user.display_name }}</td>
+                    <td class="align-middle">{{ user.email }}</td>
                   </tr>
                     {% endfor %}
                 </tbody>
