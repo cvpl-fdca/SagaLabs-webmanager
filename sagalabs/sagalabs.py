@@ -59,7 +59,7 @@ def UpdateUserType():
 
     #Update user
     user = auth.get_user(uid)
-    customClaims = user.custom_claims
+    customClaims = user.custom_claims or {}
     customClaims['UserType'] = newType
     auth.update_user(user.uid, custom_claims=customClaims)
     return '', 200
