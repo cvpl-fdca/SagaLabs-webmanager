@@ -3,6 +3,8 @@
 
 <!--Accept Modal-->
 {% include "/components/ModalAccept.html" %}
+<!--Alert Modal-->
+{% include "/components/ModalAlert.html" %}
 
   <div class="container w-50 text-bg-light rounded p-4 border-info border">
     <div class="container p-2">
@@ -19,10 +21,12 @@
               </tr>
             </thead>
             <tbody>
-              <script> 
+              <script>
+
                 //This <script> tag adds functionality to update users user type
 
                 const modal = new ModalAccept(document.getElementById('confirmationBox'))
+                const modalAlert = new ModalAlert(document.getElementById('ModalAlert'))
 
                 //This function is run when a user type is changed in UI
                 function confirmChange(userId, DisplayName, oldType) {
@@ -45,14 +49,13 @@
                     })
                     .then(response => {
                       if(response.status === 200){
-                        alert("Successfully changed '" + DisplayName + "' to '" + data.UserType + "'.")
-                        location.reload();
+                        modalAlert.display("Success", "Successfully changed Type to <b>'" + data.UserType + "'</b> for <b>'" + DisplayName + "'</b>.", ()=>location.reload())
                       } else {
-                        alert("An error occoured. Please refresh and try again");
+                        modalAlert.display("Failure", "An error occoured. Please contanct an administrator.")
                       }
                     })
                     .catch(error => {
-                        alert("An error occoured. Please refresh and try again");
+                      modalAlert.display("Failure", "An error occoured. Please contanct an administrator.")
                     });
                   }
 
