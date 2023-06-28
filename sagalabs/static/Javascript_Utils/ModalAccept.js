@@ -8,16 +8,36 @@ class ModalAccept{
         this.modalHTML = modalHTML;
         this.modalBootstrap = new bootstrap.Modal(modalHTML)
         this.acceptButton = modalHTML.querySelector('.btn-primary');
+        this.declineButton = modalHTML.querySelector('.btn-secondary');
         this.currentEventListeners = false;
     }
 
-    display(title, text, onAccept, onClose = () => null){
+    // title and text is of type string
+    // onAccept is a fucntion without arguments but may return a promise - onAccept is called uppon user clicking 'Yes'.
+    // onClose is an optional and is a function without arguments - onClose is called uppon user closing the modal in any way.
+    // This method is used to display the modal and should only be called once.
+    display(title, text, onAccept = () => null, onClose = () => null){
         let closeWithoutEvent = false
 
         const onAcceptWrapper = () => {
+            const closeModal = () => {
+                this.modalBootstrap.hide()
+            }
             closeWithoutEvent = true
-            this.modalBootstrap.hide()
-            onAccept()
+            const resultFromAccept = onAccept()
+            //Check if result of calling onAccept is a Promise
+            if(resultFromAccept instanceof Promise){
+                //Show spinning wheel and wait for fulfilled before closing
+                this.declineButton.disabled = true;
+                this.acceptButton.disabled = true;
+                this.acceptButton.innerHTML = '<span class="spinner-border spinner-border-sm mx-1" role="status" aria-hidden="true"></span>';
+                resultFromAccept.then(() => {
+                    closeModal()
+                })
+            } else {
+                closeModal()
+            }
+
         }
 
         const onCloseWrapper = () => {

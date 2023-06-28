@@ -33,37 +33,40 @@
                   const newType = document.getElementById('type-select-' + userId).value;
 
                   //This function makes a update user POST request to /UpdateUserType
-                  function submitUpdateRequest(){
-
-                    var data = {
-                        uid: userId,
-                        UserType: newType
-                    };
-                      
-                    fetch('/UpdateUserType', {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json'
-                      },
-                      body: JSON.stringify(data)
-                    })
-                    .then(response => {
-                      if(response.status === 200){
-                        modalAlert.display("Success", "Successfully changed Type to <b>'" + data.UserType + "'</b> for <b>'" + DisplayName + "'</b>.", ()=>location.reload())
-                      } else {
+                  const onAccept = () => { 
+                    return new Promise((resolve) => {
+                      const data = {
+                          uid: userId,
+                          UserType: newType
+                      };
+                        
+                      fetch('/UpdateUserType', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                      })
+                      .then(response => {
+                        if(response.status === 200){
+                          modalAlert.display("Success", "Successfully changed Type to <b>'" + data.UserType + "'</b> for <b>'" + DisplayName + "'</b>.", ()=>location.reload())
+                        } else {
+                          modalAlert.display("Failure", "An error occoured. Please contanct an administrator.")
+                        }
+                        resolve()
+                      })
+                      .catch(error => {
                         modalAlert.display("Failure", "An error occoured. Please contanct an administrator.")
-                      }
+                        resolve()
+                      });
                     })
-                    .catch(error => {
-                      modalAlert.display("Failure", "An error occoured. Please contanct an administrator.")
-                    });
                   }
 
                   modal.display(
                     "Confirm Changes", 
                     "Are you sure you want to change Type to <b>'" + newType + "'</b> for <b>'" + DisplayName + "'</b>?", 
-                    submitUpdateRequest,
-                    ()=>document.getElementById('type-select-' + userId).value = oldType
+                    onAccept,
+                    () => {document.getElementById('type-select-' + userId).value = oldType}
                   )
                 }
               </script>
