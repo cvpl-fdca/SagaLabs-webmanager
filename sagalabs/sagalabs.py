@@ -1,3 +1,5 @@
+from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
 from flask import Blueprint, render_template, flash, redirect, url_for, session, request, send_file, abort, jsonify
 import firebase_admin
 from firebase_admin import credentials
@@ -13,12 +15,24 @@ from base64 import b64encode
 
 from sagalabs.db import get_db
 
-#Firebase Service Account
-cred = credentials.Certificate("secrets/FirebasePrivateKey.json")  # Path to your service account key JSON file
+# Azure Key Vault
+
+keyVaultUri = "https://sagalabskeyvault.vault.azure.net/"
+
+credential = DefaultAzureCredential()
+client = SecretClient(vault_url=keyVaultUri, credential=credential)
+
+secret_name = "SagaLabs-Backbone-Firebase-privatekey-json"
+retrieved_secret = client.get_secret(secret_name)
+
+cred_dict = json.loads(retrieved_secret.value)
+cred = credentials.Certificate(cred_dict)
+
+# Firebase Service Account
 firebase_admin.initialize_app(cred)
 
-
 bp = Blueprint('sagalabs', __name__, url_prefix='')
+
 
 def login_required(f):
     @wraps(f)
@@ -27,7 +41,9 @@ def login_required(f):
             flash('Login required', 'error')
             return redirect(url_for('sagalabs.login'))
         return f(*args, **kwargs)
+
     return decorated_function
+
 
 # Index page
 @bp.route('/')
@@ -37,14 +53,16 @@ def home():
         sampleData = json.load(sampleFile)
         return render_template('index.html', data=sampleData)
 
+
 @bp.route('/users')
 @login_required
 def users():
-    #Get a list of users from firebase auth
+    # Get a list of users from firebase auth
     userRecordList = auth.list_users().users
-    #Creates a user object from userRecordList
+    # Creates a user object from userRecordList
     users = list(map(lambda user: User(user), userRecordList))
     return render_template('users.html', users=users)
+
 
 @bp.route('/UpdateUserType', methods=['POST'])
 @login_required
@@ -53,21 +71,21 @@ def UpdateUserType():
     uid = data.get('uid')
     newType = data.get('UserType')
 
-    #Bad request
+    # Bad request
     if not newType in ['User', 'Admin', 'SuperAdmin']:
         return '', 400
 
-    #Update user
+    # Update user
     user = auth.get_user(uid)
     customClaims = user.custom_claims or {}
     customClaims['UserType'] = newType
     auth.update_user(user.uid, custom_claims=customClaims)
     return '', 200
 
+
 # Login page
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
-
     if request.method == 'POST':
         # Connect to the database
         db = get_db()
@@ -81,11 +99,9 @@ def login():
             flash('User not found.', 'error')
             return render_template('login.html')
 
-
         if user['password'] != hashlib.sha256(request.form['password'].encode()).hexdigest():
             flash('Invalid password.', 'error')
             return render_template('login.html')
-
 
         session['logged_in'] = True
         session['username'] = user['username']
@@ -97,10 +113,10 @@ def login():
 
     return render_template('login.html')
 
+
 # Register page
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
-
     # for the register to be processed
     if request.method == 'POST':
         usr = request.form['username']
@@ -111,7 +127,7 @@ def register():
         db = get_db()
         c = db.cursor()
 
-        #Check if username not provided
+        # Check if username not provided
         if not len(usr):
             flash('Username not provided', 'error')
             return render_template('register.html')
@@ -156,7 +172,7 @@ def register():
         hashed_password = hashlib.sha256(pwd1.encode()).hexdigest()
 
         c.execute("INSERT INTO users (username, password) VALUES (?,?)",
-                   (request.form['username'], hashed_password))
+                  (request.form['username'], hashed_password))
         db.commit()
 
         flash(f"Registration succeeded. You can now log in.", 'info')
@@ -173,6 +189,6 @@ def logout():
     session.pop('logged_in', None)
     session.pop('username', None)
     session.pop('user_id', None)
- 
+
     flash('You are now logged out', 'info')
     return redirect(url_for('sagalabs.login'))
