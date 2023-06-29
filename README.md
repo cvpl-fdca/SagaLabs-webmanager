@@ -30,8 +30,8 @@ This deletes the current running config of the DB, and creates a new clean DB.
 ## Docker
 
 ```bash
-docker build --tag sl-frontend:1.0.0 .
-docker run -it -p 5000:5000 sl-frontend:1.0.0
+docker build --tag sl-web-manager:1.0.0 .
+docker run -it -p 5000:5000 sl-web-manager:1.0.0
 ```
 
 The `-it` makes the instance interactive, this means pressing ctrl+C terminates the container.

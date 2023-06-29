@@ -1,0 +1,94 @@
+{% extends "layout.html" %} 
+{% block body %} 
+
+<!--Accept Modal-->
+{% include "/components/ModalAccept.html" %}
+<!--Alert Modal-->
+{% include "/components/ModalAlert.html" %}
+
+  <div class="container w-50 text-bg-light rounded p-4 border-info border">
+    <div class="container p-2">
+      <div class="row align-items-start text-left ">
+        <div class="col text-secondary">
+          <h1 class="fw-bold">Users</h1>
+          <!-- TABLE -->
+          <table class="table table-striped">
+            <thead class="table-dark">
+              <tr>
+                <th>Type</th>
+                <th>Display Name</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              <script>
+
+                //This <script> tag adds functionality to update users user type
+
+                const modal = new ModalAccept(document.getElementById('confirmationBox'))
+                const modalAlert = new ModalAlert(document.getElementById('ModalAlert'))
+
+                //This function is run when a user type is changed in UI
+                function confirmChange(userId, DisplayName, oldType) {
+                  const newType = document.getElementById('type-select-' + userId).value;
+
+                  //This function makes a update user POST request to /UpdateUserType
+                  const onAccept = () => { 
+                    return new Promise((resolve) => {
+                      const data = {
+                          uid: userId,
+                          UserType: newType
+                      };
+                        
+                      fetch('/UpdateUserType', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                      })
+                      .then(response => {
+                        if(response.status === 200){
+                          modalAlert.display("Success", "Successfully changed Type to <b>'" + data.UserType + "'</b> for <b>'" + DisplayName + "'</b>.", ()=>location.reload())
+                        } else {
+                          modalAlert.display("Failure", "An error occoured. Please contanct an administrator.")
+                        }
+                        resolve()
+                      })
+                      .catch(error => {
+                        modalAlert.display("Failure", "An error occoured. Please contanct an administrator.")
+                        resolve()
+                      });
+                    })
+                  }
+
+                  modal.display(
+                    "Confirm Changes", 
+                    "Are you sure you want to change Type to <b>'" + newType + "'</b> for <b>'" + DisplayName + "'</b>?", 
+                    onAccept,
+                    () => {document.getElementById('type-select-' + userId).value = oldType}
+                  )
+                }
+              </script>
+
+              {% for user in users %}
+              <tr>
+                <td>
+                  <select class="form-select" id="type-select-{{ user.id }}" onchange="confirmChange('{{ user.id }}', '{{ user.display_name }}', '{{ user.local_claims.UserType }}')" autocomplete="off">
+                    <option value="User" {% if user.local_claims.UserType == 'User' %}selected{% endif %} >User</option>
+                    <option value="Admin" {% if user.local_claims.UserType == 'Admin' %}selected{% endif %}>Admin</option>
+                    <option value="SuperAdmin" {% if user.local_claims.UserType == 'SuperAdmin' %}selected{% endif %}>SuperAdmin</option>
+                  </select>
+                </td>
+                <td class="align-middle">{{ user.display_name }}</td>
+                <td class="align-middle">{{ user.email }}</td>
+              </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+          <!-- END TABLE -->
+        </div>
+      </div>
+    </div>
+  </div> 
+{% endblock %}
