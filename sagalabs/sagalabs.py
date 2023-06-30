@@ -55,6 +55,14 @@ def login_required(with_claims=False):
         return decorated_function
     return login_required_decorator
 
+# This sets variables globaly to be used by all templates
+@bp.context_processor
+def inject_value():
+    auth_cookie = request.cookies.get('sagalabs_auth')
+    is_logged_in = auth_cookie is not None
+    return dict(is_logged_in=is_logged_in)
+
+
 # Home page
 @bp.route('/')
 def home():
@@ -96,6 +104,11 @@ def UpdateUserType():
     customClaims['UserType'] = newType
     auth.update_user(user.uid, custom_claims=customClaims)
     return '', 200
+
+@bp.route('/logout')
+def logout():
+    logout_page = 'https://backbonedev.sagalabs.dk/logout?redirect=https://admindev.sagalabs.dk'
+    return redirect(logout_page)
 
 """
 # Login page

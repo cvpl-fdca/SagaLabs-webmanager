@@ -16,7 +16,16 @@
     <a href="/"><img id="logo" src="/static/sagalabsred.png"></a>
     <div class="login-nav">
       <div class="container ">
-        <div class="row"></div>
+        <div class="row">
+          {% if is_logged_in %}
+            <div class="col">
+              <a class="metanav" href="{{ url_for('sagalabs.logout') }}">
+                <span class="badge rounded-pill text-bg-danger">
+                  <i class="fa-solid fa-door-open"></i> Log out
+                </span></a>
+            </div>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
