@@ -53,6 +53,16 @@ pipeline {
             }
         }
 
+        stage('Get .env file') {
+            steps {
+                withCredentials([file(credentialsId: 'env-file-webmanager', variable: 'ENV_FILE_PATH')]) {
+                    sh '''
+                        cp "${ENV_FILE_PATH}" .env
+                    '''
+                }
+            }
+        }
+
         stage('Docker Compose Build and Run') {
             steps {
                 sh 'docker-compose up --force-recreate --build -d'

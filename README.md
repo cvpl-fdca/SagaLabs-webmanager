@@ -4,6 +4,13 @@ Written in Flask
 
 ## Usage
 
+On both linux and windows login using the az-cli command
+
+```bash
+az login
+```
+
+
 **Linux**
 
 ```bash
@@ -29,9 +36,17 @@ This deletes the current running config of the DB, and creates a new clean DB.
 
 ## Docker
 
+Make a file called .env with the variables for a service-principal in the root directory.
+The file should set the following variables:
+
 ```bash
-docker build --tag sl-web-manager:1.0.0 .
-docker run -it -p 5000:5000 sl-web-manager:1.0.0
+AZURE_CLIENT_ID=<your-service-principal-client-id>
+AZURE_CLIENT_SECRET=<your-service-principal-client-secret>
+AZURE_TENANT_ID=<your-azure-tenant-id>
+```
+
+```bash
+docker-compose up --build
 ```
 
 The `-it` makes the instance interactive, this means pressing ctrl+C terminates the container.
