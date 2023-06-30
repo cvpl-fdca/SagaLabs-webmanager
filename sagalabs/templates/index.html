@@ -1,46 +1,10 @@
 {% extends "layout.html" %} {% block body %} <div class="container w-50 text-bg-light rounded p-4 border-info border">
-  <div class="container p-2">
-    <div class="row align-items-start text-left ">
-      <div class="col text-secondary">
-        <h1 class="fw-bold">Administration</h1>
+    <div class="container p-2">
+      <div class="row align-items-start text-left ">
+        <div class="col text-secondary">
+          <h1 class="fw-bold">Welcome to sagalabs Administration</h1>
+        </div>
       </div>
     </div>
-  </div>
-  <!--Accordion https://getbootstrap.com/docs/5.0/components/accordion/-->
-  <div class="accordion">
-    {% for item in data.keys() %}
-      <div class="accordion-item">
-          <h2 class="accordion-header" id="panelsStayOpen-heading{{ item }}">
-              <button style="--bs-accordion-btn-focus-box-shadow: 0" class="accordion-button collapsed bg-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse{{ item }}" aria-expanded="false" aria-controls="panelsStayOpen-collapse{{ item }}">
-                  <strong>{{ item }}</strong>
-              </button>
-          </h2>
-          <div id="panelsStayOpen-collapse{{ item }}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading{{ item }}">
-              <div class="accordion-body">
-                  <div class="accordion" id="nestedAccordion-{{ item }}">
-                      {% for nested_item in data[item] %}
-                          <div class="accordion-item">
-                              <h2 class="accordion-header" id="nestedAccordion-heading-{{ item }}-lab-{{ nested_item }}">
-                                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#nestedAccordion-collapse-{{ item }}-lab-{{ nested_item }}" aria-expanded="false" aria-controls="nestedAccordion-collapse-{{ item }}-lab-{{ nested_item }}">
-                                      Lab #{{ nested_item }}
-                                  </button>
-                              </h2>
-                              <div id="nestedAccordion-collapse-{{ item }}-lab-{{ nested_item }}" class="accordion-collapse collapse" aria-labelledby="nestedAccordion-heading-{{ item }}-lab-{{ nested_item }}">
-                                  <div class="accordion-body">
-                                      {% for element in data[item][nested_item]%}
-                                        {% if 'ip_address' in element and element.name == 'vpn-ip'%}
-                                          <strong>Public ip:</strong> {{element.ip_address}}
-                                        {% endif %}
-                                      {% endfor %}
-                                  </div>
-                              </div>
-                          </div>
-                      {% endfor %}
-                  </div>
-              </div>
-          </div>
-      </div>
-    {% endfor %}
-  </div>
-  <!--End Custom -->
-</div> {% endblock %}
+    <!--End Custom -->
+  </div> {% endblock %}

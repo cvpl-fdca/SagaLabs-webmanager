@@ -55,14 +55,18 @@ def login_required(with_claims=False):
         return decorated_function
     return login_required_decorator
 
-
-# Index page
+# Home page
 @bp.route('/')
-@login_required()
 def home():
+    return render_template('index.html')
+
+# Labs page
+@bp.route('/labs')
+@login_required()
+def labs():
     with open('sagalabs/static/generatedSampleRequest.json', 'r') as sampleFile:
         sampleData = json.load(sampleFile)
-        return render_template('index.html', data=sampleData)
+        return render_template('labs.html', data=sampleData)
 
 
 @bp.route('/users')
