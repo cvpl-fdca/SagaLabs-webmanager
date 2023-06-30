@@ -33,21 +33,32 @@ firebase_admin.initialize_app(cred)
 
 bp = Blueprint('sagalabs', __name__, url_prefix='')
 
-
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if session.get('logged_in') is None:
-            flash('Login required', 'error')
-            return redirect(url_for('sagalabs.login'))
-        return f(*args, **kwargs)
-
-    return decorated_function
+def login_required(with_claims=False):
+    def login_required_decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            login_page = 'https://backbonedev.sagalabs.dk/login?redirect=https://admindev.sagalabs.dk'
+            session_cookie = request.cookies.get('sagalabs_auth')
+            if not session_cookie:
+                # Session cookie is unavailable. Force user to login.
+                return redirect(login_page)
+            try:
+                decoded_claims = auth.verify_session_cookie(session_cookie, check_revoked=True)
+                if with_claims:
+                    # Pass decoded_claims as a keyword argument 
+                    return f(decoded_claims=decoded_claims, *args, **kwargs)
+                else:
+                    return f(*args, **kwargs)
+            except auth.InvalidSessionCookieError:
+                # Session cookie is invalid, expired or revoked. Force user to login.
+                return redirect(login_page)
+        return decorated_function
+    return login_required_decorator
 
 
 # Index page
 @bp.route('/')
-@login_required
+@login_required()
 def home():
     with open('sagalabs/static/generatedSampleRequest.json', 'r') as sampleFile:
         sampleData = json.load(sampleFile)
@@ -55,7 +66,7 @@ def home():
 
 
 @bp.route('/users')
-@login_required
+@login_required()
 def users():
     # Get a list of users from firebase auth
     userRecordList = auth.list_users().users
@@ -65,7 +76,7 @@ def users():
 
 
 @bp.route('/UpdateUserType', methods=['POST'])
-@login_required
+@login_required()
 def UpdateUserType():
     data = request.get_json()
     uid = data.get('uid')
@@ -82,7 +93,7 @@ def UpdateUserType():
     auth.update_user(user.uid, custom_claims=customClaims)
     return '', 200
 
-
+"""
 # Login page
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -192,3 +203,4 @@ def logout():
 
     flash('You are now logged out', 'info')
     return redirect(url_for('sagalabs.login'))
+"""
