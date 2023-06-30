@@ -37,11 +37,10 @@ def login_required(with_claims=False):
     def login_required_decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            login_page = 'https://backbonedev.sagalabs.dk/login?redirect=https://admindev.sagalabs.dk'
             session_cookie = request.cookies.get('sagalabs_auth')
             if not session_cookie:
                 # Session cookie is unavailable. Force user to login.
-                return redirect(login_page)
+                return redirect(url_for('sagalabs.login_page'))
             try:
                 decoded_claims = auth.verify_session_cookie(session_cookie, check_revoked=True)
                 if with_claims:
@@ -51,7 +50,7 @@ def login_required(with_claims=False):
                     return f(*args, **kwargs)
             except auth.InvalidSessionCookieError:
                 # Session cookie is invalid, expired or revoked. Force user to login.
-                return redirect(login_page)
+                return redirect(url_for('sagalabs.login_page'))
         return decorated_function
     return login_required_decorator
 
@@ -104,6 +103,11 @@ def UpdateUserType():
     customClaims['UserType'] = newType
     auth.update_user(user.uid, custom_claims=customClaims)
     return '', 200
+
+@bp.route('/login')
+def login():
+    loging_page = 'https://backbonedev.sagalabs.dk/login?redirect=https://admindev.sagalabs.dk'
+    return redirect(loging_page)
 
 @bp.route('/logout')
 def logout():

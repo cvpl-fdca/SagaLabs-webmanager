@@ -24,6 +24,14 @@
                   <i class="fa-solid fa-door-open"></i> Log out
                 </span></a>
             </div>
+          {% else %}
+            <div>
+              <a class="metanav" href="{{ url_for('sagalabs.login') }}">
+                <span class="badge rounded-pill text-bg-secondary">
+                  <i class="fa-solid fa-right-to-bracket"></i> Login
+                </span>
+                </a>
+            </div>
           {% endif %}
         </div>
       </div>
