@@ -10,14 +10,12 @@ On both linux and windows login using the az-cli command
 az login
 ```
 
-
 **Linux**
 
 ```bash
 virtualenv venv
 . venv/bin/activate
 pip install -r requirements.txt
-flask init-db
 flask run
 ```
 
@@ -27,12 +25,8 @@ flask run
 virtualenv venv
 ./venv/Scripts/activate
 pip install -r requirements.txt
-flask init-db
 flask run
 ```
-
-Every time the structure of the DB is modified, `flask init-db` must be rerun.
-This deletes the current running config of the DB, and creates a new clean DB.
 
 ## Docker
 
@@ -54,7 +48,3 @@ This can thus be omited, meaning containers are stopped by the `docker stop <con
 
 - List installed images: `docker images`
 - List running containers: `docker ps`.
-
-### TODO
-- [x] Remove use case: User
-- [ ] BackBone integration

@@ -1,21 +1,15 @@
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
-from flask import Blueprint, render_template, flash, redirect, url_for, session, request, send_file, abort, jsonify, g
+from flask import Blueprint, render_template, redirect, url_for, request, g
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import auth
 from sagalabs.utils.User import User
 from sagalabs.utils.AuthUser import AuthUser
 
-import os
-import re
-import hashlib
 import json
 from functools import wraps
-from base64 import b64encode
 import datetime
-
-from sagalabs.db import get_db
 
 # Azure Key Vault
 
