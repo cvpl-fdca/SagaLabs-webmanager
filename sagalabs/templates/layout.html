@@ -17,7 +17,7 @@
     <div class="login-nav">
       <div class="container ">
         <div class="row">
-          {% if is_logged_in %}
+          {% if logged_in %}
             <div class="col">
               <a class="metanav" href="{{ url_for('sagalabs.logout') }}">
                 <span class="badge rounded-pill text-bg-danger">

@@ -1,6 +1,6 @@
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
-from flask import Blueprint, render_template, flash, redirect, url_for, session, request, send_file, abort, jsonify
+from flask import Blueprint, render_template, flash, redirect, url_for, session, request, send_file, abort, jsonify, g
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import auth
@@ -33,34 +33,35 @@ firebase_admin.initialize_app(cred)
 
 bp = Blueprint('sagalabs', __name__, url_prefix='')
 
-def login_required(with_claims=False):
-    def login_required_decorator(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            session_cookie = request.cookies.get('sagalabs_auth')
-            if not session_cookie:
-                # Session cookie is unavailable. Force user to login.
-                return redirect(url_for('sagalabs.login_page'))
-            try:
-                decoded_claims = auth.verify_session_cookie(session_cookie, check_revoked=True)
-                if with_claims:
-                    # Pass decoded_claims as a keyword argument 
-                    return f(decoded_claims=decoded_claims, *args, **kwargs)
-                else:
-                    return f(*args, **kwargs)
-            except auth.InvalidSessionCookieError:
-                # Session cookie is invalid, expired or revoked. Force user to login.
-                return redirect(url_for('sagalabs.login_page'))
-        return decorated_function
-    return login_required_decorator
+# This decorator redirects to sagalabs.login if not logged in
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not hasattr(g, 'profile_logged_in'):
+            return redirect(url_for('sagalabs.login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
-# This sets variables globaly to be used by all templates
+# This extract claims from cookie and appends it under the global variable 'g'
+@bp.before_request
+def validate_cookie():
+    cookie = request.cookies.get('sagalabs_auth')
+    if cookie:
+        try:
+            claims = auth.verify_session_cookie(cookie, check_revoked=True)
+            g.profile_claims = claims
+            g.profile_logged_in = True
+        except auth.InvalidSessionCookieError:
+            return
+    return
+
+# This sets variables globaly to be used by all templates before render
 @bp.context_processor
 def inject_value():
-    auth_cookie = request.cookies.get('sagalabs_auth')
-    is_logged_in = auth_cookie is not None
-    return dict(is_logged_in=is_logged_in)
-
+    template_variables = {}
+    if hasattr(g, "profile_logged_in"):
+        template_variables["logged_in"] = g.profile_logged_in
+    return template_variables
 
 # Home page
 @bp.route('/')
@@ -69,7 +70,7 @@ def home():
 
 # Labs page
 @bp.route('/labs')
-@login_required()
+@login_required
 def labs():
     with open('sagalabs/static/generatedSampleRequest.json', 'r') as sampleFile:
         sampleData = json.load(sampleFile)
@@ -77,7 +78,7 @@ def labs():
 
 
 @bp.route('/users')
-@login_required()
+@login_required
 def users():
     # Get a list of users from firebase auth
     userRecordList = auth.list_users().users
@@ -87,7 +88,7 @@ def users():
 
 
 @bp.route('/UpdateUserType', methods=['POST'])
-@login_required()
+@login_required
 def UpdateUserType():
     data = request.get_json()
     uid = data.get('uid')
