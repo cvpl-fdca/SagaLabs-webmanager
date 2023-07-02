@@ -12,6 +12,7 @@ import hashlib
 import json
 from functools import wraps
 from base64 import b64encode
+import datetime
 
 from sagalabs.db import get_db
 
@@ -32,6 +33,9 @@ cred = credentials.Certificate(cred_dict)
 firebase_admin.initialize_app(cred)
 
 bp = Blueprint('sagalabs', __name__, url_prefix='')
+
+# For keeping track of versions
+start_time = datetime.datetime.now()
 
 # This decorator redirects to sagalabs.login if not logged in
 def login_required(f):
@@ -59,6 +63,16 @@ def validate_cookie():
 @bp.context_processor
 def inject_value():
     template_variables = {}
+
+    time_since_restart = datetime.datetime.now() - start_time
+    time_format_object = {
+        'days': time_since_restart.days,
+        'hours': time_since_restart.seconds // 3600,
+        'minutes': (time_since_restart.seconds % 3600) // 60
+    }
+
+
+    template_variables["run_stamp"] = time_format_object
     if hasattr(g, "profile_logged_in"):
         template_variables["logged_in"] = g.profile_logged_in
         template_variables["claims"] = g.profile_claims
