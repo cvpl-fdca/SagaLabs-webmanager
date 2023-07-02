@@ -1,6 +1,6 @@
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
-from flask import Blueprint, render_template, flash, redirect, url_for, session, request, send_file, abort, jsonify
+from flask import Blueprint, render_template, flash, redirect, url_for, session, request, send_file, abort, jsonify, g
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import auth
@@ -43,6 +43,7 @@ def login_required(with_claims=False):
                 return redirect(url_for('sagalabs.login_page'))
             try:
                 decoded_claims = auth.verify_session_cookie(session_cookie, check_revoked=True)
+                g.logged_in = True
                 if with_claims:
                     # Pass decoded_claims as a keyword argument 
                     return f(decoded_claims=decoded_claims, *args, **kwargs)
@@ -55,11 +56,13 @@ def login_required(with_claims=False):
     return login_required_decorator
 
 # This sets variables globaly to be used by all templates
+"""
 @bp.context_processor
 def inject_value():
     auth_cookie = request.cookies.get('sagalabs_auth')
     is_logged_in = auth_cookie is not None
     return dict(is_logged_in=is_logged_in)
+"""
 
 
 # Home page
