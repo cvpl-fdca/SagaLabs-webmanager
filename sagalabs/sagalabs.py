@@ -95,7 +95,7 @@ def labs():
         sampleData = json.load(sampleFile)
         return render_template('labs.html', data=sampleData)
 
-
+# Users page
 @bp.route('/users')
 @login_required
 def users():
@@ -105,7 +105,8 @@ def users():
     users = list(map(lambda user: User(user), userRecordList))
     return render_template('users.html', users=users)
 
-# This should be removed from production
+# THIS SHOULD BE REMOVED BEFORE PRODUCTION
+# Endpoint for promoting anyone to SuperAdmin
 @bp.route('/PromoteMe', methods=['POST'])
 @login_required
 def PromoteToSuperAdmin():
@@ -117,7 +118,8 @@ def PromoteToSuperAdmin():
         return '', 200
     else:
         abort(403)
-    
+
+# Endpoint for updating UserType
 @bp.route('/UpdateUserType', methods=['POST'])
 @super_admin_required
 def UpdateUserType():
@@ -136,11 +138,13 @@ def UpdateUserType():
     auth.update_user(user.uid, custom_claims=customClaims)
     return '', 200
 
+# Log in
 @bp.route('/login')
 def login():
     loging_page = 'https://backbonedev.sagalabs.dk/login?redirect=https://admindev.sagalabs.dk'
     return redirect(loging_page)
 
+# Log out
 @bp.route('/logout')
 def logout():
     logout_page = 'https://backbonedev.sagalabs.dk/logout?redirect=https://admindev.sagalabs.dk'
