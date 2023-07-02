@@ -53,7 +53,7 @@ def validate_cookie():
     if cookie:
         try:
             claims = auth.verify_session_cookie(cookie, check_revoked=True)
-            g.profile_claims = jsonify(claims)
+            g.profile_claims = str(claims)
             g.profile_logged_in = True
         except auth.InvalidSessionCookieError:
             return
