@@ -49,7 +49,7 @@ def validate_cookie():
     if cookie:
         try:
             claims = auth.verify_session_cookie(cookie, check_revoked=True)
-            g.profile_claims = claims
+            g.profile_claims = jsonify(claims)
             g.profile_logged_in = True
         except auth.InvalidSessionCookieError:
             return
@@ -61,6 +61,7 @@ def inject_value():
     template_variables = {}
     if hasattr(g, "profile_logged_in"):
         template_variables["logged_in"] = g.profile_logged_in
+        template_variables["claims"] = g.profile_claims
     return template_variables
 
 # Home page
