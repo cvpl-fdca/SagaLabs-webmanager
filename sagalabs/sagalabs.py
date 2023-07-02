@@ -5,7 +5,6 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import auth
 from sagalabs.utils.User import User
-from sagalabs.utils.AuthUser import AuthUser
 
 import json
 from functools import wraps
@@ -49,9 +48,12 @@ def validate_cookie():
     if cookie:
         try:
             profile = auth.verify_session_cookie(cookie, check_revoked=True)
-            g.profile = AuthUser(profile)
+            user_record = auth.get_user(profile["user_id"])
+            user = User(user_record)
+            g.profile = user
             g.profile_authorized = True
-        except auth.InvalidSessionCookieError:
+        #except auth.InvalidSessionCookieError:
+        except Exception:
             return
     return
 
