@@ -1,6 +1,6 @@
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
-from flask import Blueprint, render_template, redirect, url_for, request, g
+from flask import Blueprint, render_template, redirect, url_for, request, g, abort
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import auth
@@ -31,15 +31,22 @@ bp = Blueprint('sagalabs', __name__, url_prefix='')
 # For keeping track of versions
 start_time = datetime.datetime.now()
 
+# Useful for creating decorators that enforce a validator wich dependen on its return value continues or returns the return value of not_validated. Examples below declaration
+def enforce_requirement(validator, not_validated):
+    def x_required(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if(validator()):
+                return f(*args, **kwargs)
+            else:
+                return not_validated()
+        return decorated_function
+    return x_required
+
 # This decorator redirects to sagalabs.login if not logged in
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if hasattr(g, 'profile_authorized'):
-            return f(*args, **kwargs)
-        else:
-            return redirect(url_for('sagalabs.login'))
-    return decorated_function
+login_required = enforce_requirement(lambda: hasattr(g, 'profile_authorized'), lambda: redirect(url_for('sagalabs.login')))
+# This decorator aborts with statuscode 401 (Unauthorized) if user is not SuperAdmin
+super_admin_required = enforce_requirement(lambda: hasattr(g, 'profile') and g.profile.local_claims["UserType"] == 'SuperAdmin', lambda: abort(401))
 
 # This extract claims from cookie and appends it under the global variable 'g'
 @bp.before_request
@@ -68,7 +75,6 @@ def inject_value():
         'hours': time_since_restart.seconds // 3600,
         'minutes': (time_since_restart.seconds % 3600) // 60
     }
-
 
     template_variables["run_stamp"] = time_format_object
     if hasattr(g, "profile_authorized"):
@@ -99,9 +105,21 @@ def users():
     users = list(map(lambda user: User(user), userRecordList))
     return render_template('users.html', users=users)
 
-
-@bp.route('/UpdateUserType', methods=['POST'])
+# This should be removed from production
+@bp.route('/PromoteMe', methods=['POST'])
 @login_required
+def PromoteToSuperAdmin():
+    request_url = request.url
+    if request_url == "http://127.0.0.1:5000/PromoteMe" or request_url == "https://admindev.sagalabs.dk/PromoteMe":
+        claims = g.profile.local_claims
+        claims["UserType"] = "SuperAdmin"
+        auth.update_user(g.profile.id, custom_claims=claims)
+        return '', 200
+    else:
+        abort(403)
+    
+@bp.route('/UpdateUserType', methods=['POST'])
+@super_admin_required
 def UpdateUserType():
     data = request.get_json()
     uid = data.get('uid')
@@ -109,7 +127,7 @@ def UpdateUserType():
 
     # Bad request
     if not newType in ['User', 'Admin', 'SuperAdmin']:
-        return '', 400
+        abort(400)
 
     # Update user
     user = auth.get_user(uid)
