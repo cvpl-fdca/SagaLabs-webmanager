@@ -116,7 +116,7 @@ def PromoteToSuperAdmin():
         auth.update_user(g.profile.id, custom_claims=claims)
         return '', 200
     else:
-        abort(403)
+        return request_url, 200
     
 @bp.route('/UpdateUserType', methods=['POST'])
 @super_admin_required
