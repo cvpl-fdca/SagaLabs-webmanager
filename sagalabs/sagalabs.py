@@ -110,13 +110,13 @@ def users():
 @login_required
 def PromoteToSuperAdmin():
     request_url = request.url
-    if request_url == "http://127.0.0.1:5000/PromoteMe" or request_url == "https://admindev.sagalabs.dk/PromoteMe":
+    if request_url == "http://127.0.0.1:5000/PromoteMe" or request_url == "http://admindev.sagalabs.dk/PromoteMe":
         claims = g.profile.local_claims
         claims["UserType"] = "SuperAdmin"
         auth.update_user(g.profile.id, custom_claims=claims)
         return '', 200
     else:
-        return request_url, 200
+        abort(403)
     
 @bp.route('/UpdateUserType', methods=['POST'])
 @super_admin_required
