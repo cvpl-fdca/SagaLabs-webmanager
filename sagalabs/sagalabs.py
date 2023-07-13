@@ -5,11 +5,16 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import auth
 from sagalabs.utils.User import User
+from dotenv import load_dotenv
 import os
 
 import json
 from functools import wraps
 import datetime
+
+# Load environment
+load_dotenv('.env')
+branch = os.environ.get("BRANCH_NAME", "error")
 
 # Azure Key Vault
 
@@ -23,9 +28,6 @@ retrieved_secret = client.get_secret(secret_name)
 
 cred_dict = json.loads(retrieved_secret.value)
 cred = credentials.Certificate(cred_dict)
-
-# Load environment variables
-branch = os.environ.get('BRANCH_NAME')
 
 # Firebase Service Account
 firebase_admin.initialize_app(cred)
