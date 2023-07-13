@@ -13,8 +13,8 @@ from functools import wraps
 import datetime
 
 # Load environment
-load_dotenv('.env')
-branch = os.environ.get("BRANCH_NAME", "error")
+#load_dotenv('.env')
+branch = str(dotenv_values(".env"))
 
 # Azure Key Vault
 
