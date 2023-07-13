@@ -5,6 +5,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import auth
 from sagalabs.utils.User import User
+import os
 
 import json
 from functools import wraps
@@ -22,6 +23,9 @@ retrieved_secret = client.get_secret(secret_name)
 
 cred_dict = json.loads(retrieved_secret.value)
 cred = credentials.Certificate(cred_dict)
+
+# Load environment variables
+branch = os.environ.get('BRANCH_NAME')
 
 # Firebase Service Account
 firebase_admin.initialize_app(cred)
@@ -76,6 +80,7 @@ def inject_value():
         'minutes': (time_since_restart.seconds % 3600) // 60
     }
 
+    template_variables["branch"] = branch
     template_variables["run_stamp"] = time_format_object
     if hasattr(g, "profile_authorized"):
         template_variables["profile_authorized"] = g.profile_authorized
