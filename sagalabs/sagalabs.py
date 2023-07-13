@@ -5,7 +5,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import auth
 from sagalabs.utils.User import User
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 import os
 
 import json
