@@ -14,7 +14,7 @@ import datetime
 
 # Load environment
 #load_dotenv('.env')
-branch = dotenv_values(".env").get("BRANCH_NAME")
+branch = dotenv_values(".env").get("BRANCH_NAME", "ERROR")
 
 # Azure Key Vault
 
