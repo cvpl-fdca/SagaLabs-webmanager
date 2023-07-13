@@ -66,7 +66,7 @@ pipeline {
         stage('Populate .env file') {
             steps {
                 sh '''
-                        echo "BRANCH_NAME=${BRANCH_NAME}" > .env
+                        echo "BRANCH_NAME=${params.ENV}" > .env
                 '''
             }
         }
