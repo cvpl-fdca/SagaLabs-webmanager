@@ -5,8 +5,6 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import auth
 from sagalabs.utils.User import User
-from dotenv import dotenv_values
-import os
 
 import json
 from functools import wraps
@@ -14,7 +12,7 @@ import datetime
 
 # Load environment
 #load_dotenv('.env')
-branch = dotenv_values(".env").get("BRANCH_NAME", "ERROR")
+#branch = dotenv_values(".env").get("BRANCH_NAME", "ERROR")
 
 # Azure Key Vault
 
@@ -82,7 +80,6 @@ def inject_value():
         'minutes': (time_since_restart.seconds % 3600) // 60
     }
 
-    #template_variables["branch"] = branch
     template_variables["run_stamp"] = time_format_object
     if hasattr(g, "profile_authorized"):
         template_variables["profile_authorized"] = g.profile_authorized
