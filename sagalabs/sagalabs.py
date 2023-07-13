@@ -82,7 +82,7 @@ def inject_value():
         'minutes': (time_since_restart.seconds % 3600) // 60
     }
 
-    template_variables["branch"] = branch
+    #template_variables["branch"] = branch
     template_variables["run_stamp"] = time_format_object
     if hasattr(g, "profile_authorized"):
         template_variables["profile_authorized"] = g.profile_authorized
