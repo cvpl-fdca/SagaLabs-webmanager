@@ -63,6 +63,14 @@ pipeline {
             }
         }
 
+        stage('Populate .env file') {
+            steps {
+                sh '''
+                        echo "BRANCH_NAME=${BRANCH_NAME}" > .env
+                '''
+            }
+        }
+
         stage('Docker Compose Build and Run') {
             steps {
                 sh 'docker-compose up --force-recreate --build -d'
