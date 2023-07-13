@@ -14,7 +14,7 @@ import datetime
 
 # Load environment
 #load_dotenv('.env')
-branch = str(dotenv_values(".env"))
+#branch = str(dotenv_values(".env"))
 
 # Azure Key Vault
 
