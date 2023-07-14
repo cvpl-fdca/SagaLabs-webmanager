@@ -58,6 +58,7 @@ pipeline {
                 withCredentials([file(credentialsId: 'env-file-webmanager', variable: 'ENV_FILE_PATH')]) {
                     sh '''
                         cp "${ENV_FILE_PATH}" .env
+                        chmod u+w .env
                     '''
                 }
             }
